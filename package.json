@@ -1,0 +1,32 @@
+{
+  "name": "sistema-estoque",
+  "version": "1.0.0",
+  "description": "Este projeto é um sistema de gerenciamento de estoque e vendas voltado para\r pequenos comércios de variedades. Ele resolve um problema real observado em\r uma loja onde todo o controle era feito manualmente: não havia registro de\r quantas peças existiam em estoque, quantas foram vendidas de cada produto,\r nem qual vendedora realizou cada venda — informação importante, já que as\r vendedoras recebem comissão sobre o valor vendido.",
+  "main": "index.js",
+  "scripts": {
+  "dev": "nodemon src/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dhenyffer-arantes/sistema-estoque.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/dhenyffer-arantes/sistema-estoque/issues"
+  },
+  "homepage": "https://github.com/dhenyffer-arantes/sistema-estoque#readme",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "dotenv": "^18.0.8",
+    "express": "^5.3.0",
+    "jsonwebtoken": "^9.0.3",
+    "nodemailer": "^10.1.2",
+    "pg": "^8.23.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}

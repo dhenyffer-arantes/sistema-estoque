@@ -1,0 +1,47 @@
+-- Tabela de Usuários
+CREATE TABLE IF NOT EXISTS users (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  password_hash VARCHAR(255) NOT NULL,
+  role VARCHAR(50) NOT NULL DEFAULT 'USER',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabela de Produtos
+CREATE TABLE IF NOT EXISTS products (
+  id SERIAL PRIMARY KEY,
+  codigo_barras VARCHAR(100) UNIQUE NOT NULL,
+  nome VARCHAR(255) NOT NULL,
+  preco DECIMAL(10, 2) NOT NULL DEFAULT 0.00,
+  estoque INT NOT NULL DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabela de Vendas
+CREATE TABLE IF NOT EXISTS vendas (
+  id SERIAL PRIMARY KEY,
+  usuario_id INT REFERENCES users(id) ON DELETE SET NULL,
+  data TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabela de Itens de Venda
+CREATE TABLE IF NOT EXISTS item_venda (
+  id SERIAL PRIMARY KEY,
+  venda_id INT REFERENCES vendas(id) ON DELETE CASCADE,
+  produto_id INT REFERENCES products(id) ON DELETE RESTRICT,
+  quantidade INT NOT NULL DEFAULT 1,
+  preco_unitario DECIMAL(10, 2) NOT NULL
+);
+
+-- Tabela Auxiliar de Recuperação de Senha (Semana 3)
+CREATE TABLE IF NOT EXISTS password_resets (
+  id SERIAL PRIMARY KEY,
+  user_id INT REFERENCES users(id) ON DELETE CASCADE,
+  token VARCHAR(255) NOT NULL,
+  expires_at TIMESTAMP NOT NULL,
+  used BOOLEAN DEFAULT FALSE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
