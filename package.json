@@ -4,7 +4,7 @@
   "description": "Este projeto é um sistema de gerenciamento de estoque e vendas voltado para\r pequenos comércios de variedades. Ele resolve um problema real observado em\r uma loja onde todo o controle era feito manualmente: não havia registro de\r quantas peças existiam em estoque, quantas foram vendidas de cada produto,\r nem qual vendedora realizou cada venda — informação importante, já que as\r vendedoras recebem comissão sobre o valor vendido.",
   "main": "index.js",
   "scripts": {
-  "dev": "nodemon src/server.js"
+    "dev": "nodemon src/server.js"
   },
   "repository": {
     "type": "git",
