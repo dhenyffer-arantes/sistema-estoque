@@ -2,7 +2,7 @@ const express = require('express');
 require('dotenv').config();
 
 // Executa o script de inicialização do banco de dados ao ligar o servidor
-require('src/database/init'); 
+//require('./database/init'); 
 
 const authRoutes = require('./routes/authRoutes');
 const productRoutes = require('./routes/productRoutes');
