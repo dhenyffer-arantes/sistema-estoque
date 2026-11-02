@@ -1,22 +1,14 @@
 # Sistema de Gerenciamento de Estoque e Vendas
 
-## Escopo
+Este projeto foi desenvolvido para atender às necessidades reais de um pequeno comércio de variedades que costumava controlar todo o seu inventário de forma manual. A falta de registros sobre o volume de peças em estoque, o histórico de itens vendidos e a identificação da vendedora responsável por cada operação dificultava a gestão do negócio e o cálculo correto das comissões.
 
-Este projeto é um sistema de gerenciamento de estoque e vendas voltado para
-pequenos comércios de variedades. Ele resolve um problema real observado em
-uma loja onde todo o controle era feito manualmente: não havia registro de
-quantas peças existiam em estoque, quantas foram vendidas de cada produto,
-nem qual vendedora realizou cada venda — informação importante, já que as
-vendedoras recebem comissão sobre o valor vendido.
+A aplicação resolve esses problemas ao automatizar a baixa de estoque a cada transação, vincular as vendas ao perfil de quem a realizou e permitir o controle de acesso entre administradores e vendedores.
 
-O sistema permite:
-- Cadastro de produtos por código de barras, com controle de estoque;
-- Registro de vendas associadas ao usuário (vendedora) autenticado;
-- Consulta de histórico de vendas e cálculo de comissão por vendedora;
-- Dois perfis de acesso: **Administrador** (gerencia produtos, usuários e
-  relatórios) e **Vendedor** (registra vendas).
+---
 
-## Diagrama de Entidade-Relacionamento (DER)
+## Estrutura de Dados
+
+O diagrama abaixo ilustra a relação entre usuários, vendas efetuadas, itens comercializados e os produtos cadastrados no sistema:
 
 ```mermaid
 erDiagram
@@ -35,7 +27,7 @@ erDiagram
         int id PK
         string codigoBarras
         string nome
-        decimal preco
+        string preco
         int estoque
     }
     VENDA {
@@ -50,4 +42,3 @@ erDiagram
         int quantidade
         decimal precoUnitario
     }
-```
