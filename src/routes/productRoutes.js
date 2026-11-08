@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const productController = require('../controllers/productController');
-const { authenticateToken, authorizeAdmin } = require('../middlewares/auth');
+const { authenticateToken, authorizeAdmin } = require('../middlewares/authMiddleware');
 
 const routes = Router();
 
