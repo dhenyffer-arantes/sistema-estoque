@@ -1,4 +1,4 @@
--- Tabela de Usuários
+//Tabela de usuários
 CREATE TABLE IF NOT EXISTS users (
   id SERIAL PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS users (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Tabela de Produtos
+//Tabela de produtos
 CREATE TABLE IF NOT EXISTS products (
   id SERIAL PRIMARY KEY,
   codigo_barras VARCHAR(100) UNIQUE NOT NULL,
@@ -20,14 +20,14 @@ CREATE TABLE IF NOT EXISTS products (
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Tabela de Vendas
+//Tabela de vendas
 CREATE TABLE IF NOT EXISTS vendas (
   id SERIAL PRIMARY KEY,
   usuario_id INT REFERENCES users(id) ON DELETE SET NULL,
   data TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Tabela de Itens de Venda
+//Tabela de itens de venda
 CREATE TABLE IF NOT EXISTS item_venda (
   id SERIAL PRIMARY KEY,
   venda_id INT REFERENCES vendas(id) ON DELETE CASCADE,
@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS item_venda (
   preco_unitario DECIMAL(10, 2) NOT NULL
 );
 
--- Tabela Auxiliar de Recuperação de Senha (Semana 3)
+// Tabela auxiliar de recuperação de senha 
 CREATE TABLE IF NOT EXISTS password_resets (
   id SERIAL PRIMARY KEY,
   user_id INT REFERENCES users(id) ON DELETE CASCADE,
