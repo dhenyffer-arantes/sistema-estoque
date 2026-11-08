@@ -1,0 +1,443 @@
+{
+  "info": {
+    "_postman_id": "49765757-ef2b-44b9-b5e6-03f0a353978b",
+    "name": "Sistema Estoque API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "60034995",
+    "_collection_link": "https://go.postman.co/collection/60034995-49765757-ef2b-44b9-b5e6-03f0a353978b?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Autenticação",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const resposta = pm.response.json();\r\n\r\nif (resposta.token) {\r\n    pm.collectionVariables.set(\"token\", resposta.token);\r\n}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"usuario_novo@email.com\",\r\n  \"password\": \"senha123_segura\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://sistema-estoque-api-a52f.onrender.com/auth/login",
+              "protocol": "https",
+              "host": [
+                "sistema-estoque-api-a52f",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Solicitar reset senha",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"usuario_novo@email.com\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://sistema-estoque-api-a52f.onrender.com/auth/forgot-password",
+              "protocol": "https",
+              "host": [
+                "sistema-estoque-api-a52f",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "auth",
+                "forgot-password"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Registro de Usuário",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"name\": \"Usuario Teste\",\r\n  \"email\": \"usuario@email.com\",\r\n  \"password\": \"senha123_segura\",\r\n  \"role\": \"USER\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:3000/auth/register",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3000",
+              "path": [
+                "auth",
+                "register"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Redefinir senha",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"email\": \"usuario_novo@email.com\",\r\n  \"newPassword\": \"senha_nova123_segura\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://sistema-estoque-api-a52f.onrender.com/auth/reset-password",
+              "protocol": "https",
+              "host": [
+                "sistema-estoque-api-a52f",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "auth",
+                "reset-password"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Produtos",
+      "item": [
+        {
+          "name": "Listar produtos",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_037s}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://sistema-estoque-api-a52f.onrender.com/products",
+              "protocol": "https",
+              "host": [
+                "sistema-estoque-api-a52f",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "products"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar produto por ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_037s}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://sistema-estoque-api-a52f.onrender.com/products/1",
+              "protocol": "https",
+              "host": [
+                "sistema-estoque-api-a52f",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "products",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Cadastrar produto",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_037s}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"codigo_barras\": \"7891234567890\",\r\n  \"nome\": \"Camiseta Básica\",\r\n  \"preco\": 49.90,\r\n  \"estoque\": 20\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://sistema-estoque-api-a52f.onrender.com/products",
+              "protocol": "https",
+              "host": [
+                "sistema-estoque-api-a52f",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "products"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Atualizar produto",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_037s}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"codigo_barras\": \"7891234567890\",\r\n  \"nome\": \"Camiseta Básica Atualizada cor diferente\",\r\n  \"preco\": 54.90,\r\n  \"estoque\": 25\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://sistema-estoque-api-a52f.onrender.com/products/1",
+              "protocol": "https",
+              "host": [
+                "sistema-estoque-api-a52f",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "products",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Excluir produto",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_037s}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "https://sistema-estoque-api-a52f.onrender.com/products/1",
+              "protocol": "https",
+              "host": [
+                "sistema-estoque-api-a52f",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "products",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Vendas",
+      "item": [
+        {
+          "name": "Registrar venda",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{json_web_token_037s}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"itens\": [\r\n    {\r\n      \"produto_id\": 2,\r\n      \"quantidade\": 2\r\n    }\r\n  ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://sistema-estoque-api-a52f.onrender.com/vendas",
+              "protocol": "https",
+              "host": [
+                "sistema-estoque-api-a52f",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "vendas"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Listar vendas",
+          "protocolProfileBehavior": {
+            "disableCookies": false,
+            "followRedirects": true,
+            "maxResponseSize": 52428800,
+            "protocolVersion": "auto",
+            "strictSSL": false
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Mywicm9sZSI6IkFETUlOIiwiaWF0IjoxNzk0MTE5NTMwLCJleHAiOjE3OTQyMDU5MzB9.7h7a1n8G3Zes6hEm1vU72BgipfTzoww5PZZel1vvMZw",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://sistema-estoque-api-a52f.onrender.com/vendas",
+              "protocol": "https",
+              "host": [
+                "sistema-estoque-api-a52f",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "vendas"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Integração externa",
+      "item": [
+        {
+          "name": "Consultar CEP",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://sistema-estoque-api-a52f.onrender.com/cep/30140071",
+              "protocol": "https",
+              "host": [
+                "sistema-estoque-api-a52f",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "cep",
+                "30140071"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": ""
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "json_web_token_037s",
+      "secret": true
+    }
+  ]
+}
