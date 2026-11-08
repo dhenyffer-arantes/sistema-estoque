@@ -38,7 +38,7 @@ module.exports = {
     }
   },
 
-async update(req, res, next) {
+  async update(req, res, next) {
   try {
     const { id } = req.params;
     const { codigo_barras, nome, preco, estoque } = req.body;
@@ -80,7 +80,7 @@ async update(req, res, next) {
 
     next(err);
   }
-}
+},
 
   async delete(req, res, next) {
     try {
