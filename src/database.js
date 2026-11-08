@@ -1,10 +1,9 @@
 const { Pool } = require('pg');
 
-// Prioriza a DATABASE_URL do Render; se não existir, usa as variáveis locais
 const pool = process.env.DATABASE_URL
   ? new Pool({
       connectionString: process.env.DATABASE_URL,
-      ssl: { rejectUnauthorized: false } // Obrigatório para conexões no Render
+      ssl: { rejectUnauthorized: false }
     })
   : new Pool({
       host: process.env.DB_HOST || 'localhost',
@@ -16,4 +15,5 @@ const pool = process.env.DATABASE_URL
 
 module.exports = {
   query: (text, params) => pool.query(text, params),
+  getClient: () => pool.connect()
 };
