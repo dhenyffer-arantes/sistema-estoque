@@ -1,215 +1,205 @@
-# Sistema de Gestão de Estoque e Vendas
+# Sistema de Gerenciamento de Estoque e Vendas
 
 ## 1. Sobre o projeto
 
-O Sistema de Gestão de Estoque e Vendas é uma API REST desenvolvida para auxiliar no gerenciamento de produtos e vendas de uma loja.
+O Sistema de Gerenciamento de Estoque e Vendas é uma API REST desenvolvida para auxiliar no controle de produtos, estoque e registro de vendas de uma loja.
 
-A aplicação permite realizar o cadastro e a consulta de produtos, controlar as quantidades disponíveis no estoque e registrar vendas. Também possui autenticação de usuários, controle de acesso por perfil e integração com uma API externa para consulta de endereços por CEP.
+O sistema permite cadastrar e gerenciar produtos, controlar as quantidades disponíveis em estoque e registrar vendas, realizando a atualização automática do estoque.
+
+Também possui autenticação de usuários, controle de permissões por perfil e integração com a API ViaCEP.
 
 ## 2. Tecnologias utilizadas
 
 - Node.js
-- JavaScript
 - Express
 - PostgreSQL
-- JSON Web Token (JWT)
-- bcrypt
+- JavaScript
+- JWT (autenticação)
+- Bcrypt (criptografia de senhas)
 - Docker
-- Docker Compose
+- Render
 - ViaCEP
+- Postman
 
 ## 3. Funcionalidades
 
 - Cadastro e autenticação de usuários.
-- Autenticação utilizando JWT.
-- Controle de acesso por perfil: ADMIN e USER.
+- Login com geração de token JWT.
+- Controle de acesso por perfil de usuário.
 - Cadastro, consulta, atualização e exclusão de produtos.
+- Controle de quantidade de produtos em estoque.
 - Registro de vendas.
 - Atualização automática do estoque após uma venda.
-- Validação da quantidade disponível antes de concluir uma venda.
+- Consulta do histórico de vendas.
+- Recuperação e redefinição de senha.
 - Consulta de endereço por CEP utilizando a API ViaCEP.
-- Tratamento global de erros.
 
-## 4. Perfis de acesso
+## 4. Perfis de usuário
 
-### ADMIN
+O sistema possui dois níveis de acesso:
+
+**ADMIN**
 - Cadastrar produtos.
-- Consultar produtos.
-- Atualizar informações dos produtos.
+- Listar e consultar produtos.
+- Atualizar produtos.
 - Excluir produtos.
-- Acessar as funcionalidades permitidas aos usuários autenticados.
-
-### USER
-- Consultar produtos.
 - Registrar vendas.
-- Acessar as funcionalidades permitidas ao seu perfil.
+- Consultar vendas.
 
-## 5. Modelo de dados (DER)
+**USER**
+- Consultar produtos.
+- Consultar vendas.
+- Registrar vendas.
 
-O banco de dados utiliza tabelas relacionadas para armazenar usuários, produtos, vendas, itens das vendas e solicitações de redefinição de senha.
+As operações protegidas exigem autenticação por token JWT.
+
+## 5. Estrutura do banco de dados
+
+O banco de dados PostgreSQL possui cinco tabelas principais:
+
+- `users`: armazena os dados dos usuários.
+- `products`: armazena os produtos e suas informações de estoque.
+- `vendas`: registra as vendas realizadas.
+- `item_venda`: armazena os produtos e quantidades de cada venda.
+- `password_resets`: armazena os registros relacionados à redefinição de senhas.
+
+### Diagrama Entidade-Relacionamento (DER)
 
 ```mermaid
 erDiagram
-    USERS ||--o{ VENDAS : realiza
-    VENDAS ||--|{ ITEM_VENDA : possui
-    PRODUCTS ||--o{ ITEM_VENDA : participa
-    USERS ||--o{ PASSWORD_RESETS : solicita
+    users ||--o{ vendas : realiza
+    users ||--o{ password_resets : solicita
+    vendas ||--o{ item_venda : possui
+    products ||--o{ item_venda : participa
 
-    USERS {
+    users {
         int id PK
         varchar name
         varchar email
-        varchar password
+        varchar password_hash
         varchar role
+        timestamp created_at
+        timestamp updated_at
     }
 
-    PRODUCTS {
+    products {
         int id PK
         varchar codigo_barras
         varchar nome
         decimal preco
         int estoque
-    }
-
-    VENDAS {
-        int id PK
-        int user_id FK
-        decimal valor_total
         timestamp created_at
+        timestamp updated_at
     }
 
-    ITEM_VENDA {
+    vendas {
+        int id PK
+        int usuario_id FK
+        timestamp data
+    }
+
+    item_venda {
         int id PK
         int venda_id FK
-        int product_id FK
+        int produto_id FK
         int quantidade
         decimal preco_unitario
     }
 
-    PASSWORD_RESETS {
+    password_resets {
         int id PK
         int user_id FK
         varchar token
         timestamp expires_at
+        boolean used
+        timestamp created_at
     }
 ```
 
 ## 6. Rotas da API
 
-### Autenticação
+### Autenticação — `/auth`
 
 | Método | Rota | Descrição |
 |---|---|---|
 | POST | `/auth/register` | Cadastro de usuário |
-| POST | `/auth/login` | Autenticação de usuário |
-| POST | `/auth/forgot-password` | Solicitação de redefinição de senha |
+| POST | `/auth/login` | Login |
+| POST | `/auth/forgot-password` | Solicitação de recuperação de senha |
 | POST | `/auth/reset-password` | Redefinição de senha |
 
-### Produtos
+### Produtos — `/products`
 
-| Método | Rota | Descrição | Permissão |
-|---|---|---|---|
-| GET | `/products` | Lista os produtos | Autenticado |
-| GET | `/products/:id` | Consulta produto por ID | Autenticado |
-| POST | `/products` | Cadastra produto | ADMIN |
-| PUT | `/products/:id` | Atualiza produto | ADMIN |
-| DELETE | `/products/:id` | Exclui produto | ADMIN |
+| Método | Rota | Descrição |
+|---|---|---|
+| GET | `/products` | Listar produtos |
+| GET | `/products/:id` | Consultar produto por ID |
+| POST | `/products` | Cadastrar produto |
+| PUT | `/products/:id` | Atualizar produto |
+| DELETE | `/products/:id` | Excluir produto |
 
-### Vendas
+### Vendas — `/vendas`
 
-| Método | Rota | Descrição | Permissão |
-|---|---|---|---|
-| POST | `/vendas` | Registra uma venda | Autenticado |
-| GET | `/vendas` | Lista as vendas | Autenticado |
+| Método | Rota | Descrição |
+|---|---|---|
+| POST | `/vendas` | Registrar venda |
+| GET | `/vendas` | Listar vendas |
 
-### Consulta de CEP
+### Consulta de CEP — `/cep`
 
-| Método | Rota | Descrição | Permissão |
-|---|---|---|---|
-| GET | `/cep/:cep` | Consulta endereço por CEP | Pública |
+| Método | Rota | Descrição |
+|---|---|---|
+| GET | `/cep/:cep` | Consultar endereço pelo CEP |
 
 ## 7. Regras de negócio
 
-- O cadastro público de usuários utiliza o perfil USER.
-- Somente administradores podem cadastrar, atualizar e excluir produtos.
-- Uma venda não pode ser concluída quando a quantidade solicitada for superior ao estoque disponível.
-- Após uma venda válida, a quantidade vendida é descontada automaticamente do estoque.
-- Em caso de erro durante o processamento de uma venda, as alterações são revertidas para preservar a consistência dos dados.
-- As rotas protegidas exigem autenticação por token JWT.
+- O acesso às rotas protegidas é realizado por autenticação JWT.
+- As operações de gerenciamento de produtos são restritas ao perfil ADMIN.
+- Ao registrar uma venda, a quantidade correspondente é descontada do estoque.
+- O sistema realiza validações para evitar vendas com quantidades inválidas ou superiores ao estoque disponível.
+- Os itens de uma venda são relacionados aos produtos cadastrados no banco de dados.
 
-## 8. Integração com API externa
+## 8. Integração com ViaCEP
 
-O sistema utiliza a API ViaCEP para consultar informações de endereço a partir de um CEP.
+O sistema possui integração com a API ViaCEP para consultar informações de endereço a partir de um CEP.
 
-A integração permite obter dados como:
+A consulta retorna informações como:
 
-- CEP;
-- Logradouro;
-- Bairro;
-- Cidade;
-- Unidade federativa (UF).
+- CEP
+- Logradouro
+- Bairro
+- Cidade
+- Estado
 
-Documentação da API utilizada: https://viacep.com.br/
+## 9. Execução do projeto
 
-## 9. Instalação e execução
+O projeto utiliza Docker para facilitar a configuração e execução da aplicação e do banco de dados.
 
-### Pré-requisitos
-
-- Node.js
-- Docker
-- Docker Compose
-- Git
-
-### Clonagem do repositório
-
-```bash
-git clone https://github.com/dhenyffer-arantes/sistema-estoque.git
-cd sistema-estoque
-```
-
-### Configuração do ambiente
-
-As variáveis de ambiente necessárias para a execução da aplicação estão descritas no arquivo `.env.example`.
-
-### Execução com Docker
+Com o Docker instalado, execute:
 
 ```bash
 docker compose up --build
 ```
 
-Para executar os containers em segundo plano:
-
-```bash
-docker compose up --build -d
-```
-
-Para verificar os containers em execução:
-
-```bash
-docker compose ps
-```
-
-Para encerrar a aplicação:
-
-```bash
-docker compose down
-```
+A API utiliza a porta `3000` para execução local.
 
 ## 10. Links do projeto
 
-- **Repositório GitHub:** [INSERIR LINK]
-- **API em produção (Render):** https://sistema-estoque-api-a52f.onrender.com
-- **Collection do Postman:** [INSERIR LINK DO ARQUIVO OU DA COLLECTION]
-- **Documentação adicional:** [INSERIR LINK, SE HOUVER]
+**Repositório GitHub:**
+
+https://github.com/dhenyffer-arantes/sistema-estoque
+
+**API hospedada no Render:**
+
+https://sistema-estoque-api-a52f.onrender.com
 
 ## 11. Collection do Postman
 
-A Collection do Postman reúne as requisições utilizadas para testar as funcionalidades da API, incluindo autenticação, gerenciamento de produtos, registro de vendas e consulta de CEP.
+A Collection contém as requisições utilizadas para testar as funcionalidades e rotas da API.
 
-**Arquivo:** [INSERIR CAMINHO OU NOME DO ARQUIVO]
+[Visualizar Collection do Postman](./sistema-estoque-collections-postman.json)
 
 ## 12. Autoria
 
-Projeto acadêmico desenvolvido por:
+**Desenvolvedora:** Dhenyffer Caroline Almeida Arantes
 
-**Nome:** Dhenyffer Caroline Almeida Arantes
+**Projeto:** Sistema de Gerenciamento de Estoque e Vendas
