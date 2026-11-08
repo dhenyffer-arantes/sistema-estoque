@@ -4,7 +4,7 @@ const db = require('../database');
 
 const register = async (req, res, next) => {
   try {
-    const { name, email, password, role } = req.body;
+    const { name, email, password } = req.body;
     
     if (!name || !email || !password) {
       return res.status(400).json({ message: 'Preencha todos os campos obrigatórios.' });
@@ -19,7 +19,7 @@ const register = async (req, res, next) => {
 
     const newUser = await db.query(
       'INSERT INTO users (name, email, password_hash, role) VALUES ($1, $2, $3, $4) RETURNING id, name, email, role',
-      [name, email, hashedPassword, role || 'USER']
+      [name, email, hashedPassword, 'USER']
     );
 
     return res.status(201).json(newUser.rows[0]);

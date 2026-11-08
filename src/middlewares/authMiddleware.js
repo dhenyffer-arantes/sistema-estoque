@@ -18,10 +18,16 @@ function authenticateToken(req, res, next) {
 }
 
 function authorizeAdmin(req, res, next) {
-  if (req.user && req.user.role === 'ADMIN') {
+  const role = String(req.user?.role || '').toUpperCase();
+
+  if (role === 'ADMIN') {
     return next();
   }
-  return res.status(403).json({ status: 'error', message: 'Acesso restrito a administradores.' });
+
+  return res.status(403).json({
+    status: 'error',
+    message: 'Acesso restrito a administradores.'
+  });
 }
 
 module.exports = { authenticateToken, authorizeAdmin };

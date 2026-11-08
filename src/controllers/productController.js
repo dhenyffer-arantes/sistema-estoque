@@ -38,26 +38,49 @@ module.exports = {
     }
   },
 
-  async update(req, res, next) {
-    try {
-      const { id } = req.params;
-      const { codigo_barras, nome, preco, estoque } = req.body;
+async update(req, res, next) {
+  try {
+    const { id } = req.params;
+    const { codigo_barras, nome, preco, estoque } = req.body;
 
-      const product = await productRepository.findById(id);
-      if (!product) return res.status(404).json({ message: 'Produto não encontrado.' });
+    const product = await productRepository.findById(id);
 
-      const updated = await productRepository.update(id, {
-        codigo_barras: codigo_barras || product.codigo_barras,
-        nome: nome || product.nome,
-        preco: preco !== undefined ? preco : product.preco,
-        estoque: estoque !== undefined ? estoque : product.estoque
+    if (!product) {
+      return res.status(404).json({
+        message: 'Produto não encontrado.'
       });
-
-      return res.json(updated);
-    } catch (err) {
-      next(err);
     }
-  },
+
+    const novoCodigo = codigo_barras || product.codigo_barras;
+
+    // Verifica se o código já pertence a outro produto
+    const exists = await productRepository.findByCodigoBarras(novoCodigo);
+
+    if (exists && String(exists.id) !== String(id)) {
+      return res.status(400).json({
+        message: 'Código de barras já cadastrado em outro produto.'
+      });
+    }
+
+    const updated = await productRepository.update(id, {
+      codigo_barras: novoCodigo,
+      nome: nome || product.nome,
+      preco: preco !== undefined ? preco : product.preco,
+      estoque: estoque !== undefined ? estoque : product.estoque
+    });
+
+    return res.json(updated);
+
+  } catch (err) {
+    if (err.code === '23505') {
+      return res.status(400).json({
+        message: 'Código de barras já cadastrado em outro produto.'
+      });
+    }
+
+    next(err);
+  }
+}
 
   async delete(req, res, next) {
     try {
