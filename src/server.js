@@ -1,12 +1,10 @@
 const express = require('express');
 require('dotenv').config();
 
-// Executa o script de inicialização do banco de dados ao ligar o servidor
-//require('./database/init'); 
-
 const authRoutes = require('./routes/authRoutes');
 const productRoutes = require('./routes/productRoutes');
 const vendaRoutes = require('./routes/vendaRoutes');
+const cepRoutes = require('./routes/cepRoutes');
 
 const app = express();
 app.use(express.json());
@@ -14,6 +12,7 @@ app.use(express.json());
 app.use('/auth', authRoutes);
 app.use('/products', productRoutes);
 app.use('/vendas', vendaRoutes);
+app.use('/cep', cepRoutes);
 
 app.get('/', (req, res) => {
   return res.json({ status: 'OK', message: 'API do Sistema de Estoque completa!' });
