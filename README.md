@@ -4,41 +4,61 @@ Este projeto foi desenvolvido para atender às necessidades reais de um pequeno 
 
 A aplicação resolve esses problemas ao automatizar a baixa de estoque a cada transação, vincular as vendas ao perfil de quem a realizou e permitir o controle de acesso entre administradores e vendedores.
 
+# 🛒 API de Gestão de Estoque e Vendas
+
+API RESTful desenvolvida em Node.js e Express para gerenciamento de estoque, controle de vendas, autenticação por permissões (RBAC) e consulta externa de CEP.
+
+- Links Úteis
+* API em Produção (Render):`https://sistema-estoque-api-a52f.onrender.com`
+* Repositório GitHub:`[LINK_DO_SEU_REPOSITORIO]`
+* Collection de Testes: Disponível no arquivo `./collection.json` na raiz deste repositório.
+
 ---
 
-## Estrutura de Dados
+- Modelo de Banco de Dados (DER)
 
-O diagrama abaixo ilustra a relação entre usuários, vendas efetuadas, itens comercializados e os produtos cadastrados no sistema:
+O banco de dados PostgreSQL é composto por 5 tabelas com relacionamentos e regras estritas de integridade referencial:
 
 ```mermaid
 erDiagram
-    USUARIO ||--o{ VENDA : realiza
-    VENDA ||--o{ ITEM_VENDA : contem
-    PRODUTO ||--o{ ITEM_VENDA : "e vendido em"
+    users ||--o{ vendas : "realiza"
+    users ||--o{ password_resets : "possui"
+    vendas ||--|{ item_venda : "contem"
+    products ||--o{ item_venda : "pertence"
 
-    USUARIO {
+    users {
         int id PK
-        string nome
+        string name
         string email
-        string senha
+        string password_hash
         string role
     }
-    PRODUTO {
+
+    products {
         int id PK
-        string codigoBarras
+        string codigo_barras
         string nome
-        string preco
+        decimal preco
         int estoque
     }
-    VENDA {
+
+    vendas {
         int id PK
-        int usuarioId FK
-        datetime data
+        int usuario_id FK
+        timestamp created_at
     }
-    ITEM_VENDA {
+
+    item_venda {
         int id PK
-        int vendaId FK
-        int produtoId FK
+        int venda_id FK
+        int produto_id FK
         int quantidade
-        decimal precoUnitario
+        decimal preco_unitario
+    }
+
+    password_resets {
+        int id PK
+        int user_id FK
+        string token
+        timestamp expires_at
     }
